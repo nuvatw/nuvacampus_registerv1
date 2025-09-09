@@ -4,42 +4,37 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>nuvaCampus｜AI 新世代思維覺醒 — nuva 校園大使計畫</title>
-  <meta name="description" content="加入 nuva 校園大使，接受 AI 與軟實力培訓，參與全台校園巡迴，擔任 AI 戰鬥營助教，用一年打造你的影響力旅程。" />
+  <meta name="description" content="加入 nuva 校園大使，接受 AI 與軟實力培訓，參與全台校園巡迴，擔任校園 AI 英雄之旅隊長，用一年打造你的影響力旅程。" />
 
   <!-- Fonts (GenSenRounded family in /assets/fonts/) -->
   <style>
     @font-face {
       font-family: "GenSenRounded";
-      src:
-        url("./assets/fonts/GenSenRounded-M.ttf") format("truetype");
+      src: url("./assets/fonts/GenSenRounded-M.ttf") format("truetype");
       font-weight: 500;
       font-display: swap;
     }
     @font-face {
       font-family: "GenSenRounded";
-      src:
-        url("./assets/fonts/GenSenRounded-R.ttf") format("truetype");
+      src: url("./assets/fonts/GenSenRounded-R.ttf") format("truetype");
       font-weight: 400;
       font-display: swap;
     }
     @font-face {
       font-family: "GenSenRounded";
-      src:
-        url("./assets/fonts/GenSenRounded-B.ttf") format("truetype");
+      src: url("./assets/fonts/GenSenRounded-B.ttf") format("truetype");
       font-weight: 700;
       font-display: swap;
     }
     @font-face {
       font-family: "GenSenRounded";
-      src:
-        url("./assets/fonts/GenSenRounded-L.ttf") format("truetype");
+      src: url("./assets/fonts/GenSenRounded-L.ttf") format("truetype");
       font-weight: 300;
       font-display: swap;
     }
     @font-face {
       font-family: "GenSenRounded";
-      src:
-        url("./assets/fonts/GenSenRounded-EL.ttf") format("truetype");
+      src: url("./assets/fonts/GenSenRounded-EL.ttf") format("truetype");
       font-weight: 200;
       font-display: swap;
     }
@@ -95,6 +90,7 @@
       margin-left:auto;display:flex;align-items:center;gap:28px
     }
     .nav__link{color:#111;font-weight:500}
+
     .btn{
       display:inline-flex;align-items:center;justify-content:center;
       padding:14px 22px;border-radius:999px;font-weight:700;
@@ -109,6 +105,7 @@
       box-shadow:none
     }
     .btn--ghost:hover{background:var(--nuva-blue);color:#fff;box-shadow:0 8px 24px -10px rgba(59,110,174,.55)}
+    .btn--xl{padding:26px 44px;font-size:28px;border-width:2px}
 
     /* Hero */
     .hero{
@@ -244,17 +241,60 @@
 
     /* Apply/eligibility section */
     .apply{
-      background:var(--bg);padding:80px 0
+      background:var(--bg);padding:80px 0;
+      position: relative;      /* 讓整塊層級提高，壓住時間軸線與圓點 */
+      z-index: 6;
     }
     .apply h2{color:#0f172a}
     .elig{
-      background:#fff;border:1px solid #e4eaf5;border-radius:22px;padding:22px;
+      background:#fff;border:1px solid #e4eaf5;border-radius:22px;padding:28px;
       box-shadow:0 12px 28px -18px rgba(15,23,42,.16)
+    }
+    /* 兩欄條件 + 置中大按鈕 */
+    .elig--grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+      align-items:start;
+    }
+    .elig__item{
+      background:#f4f9ff;
+      border:1px solid #e6eef9;
+      border-radius:18px;
+      padding:26px;
+      font-size:clamp(18px,2.2vw,28px);
+      display:flex;align-items:center;gap:14px;
+      box-shadow:0 10px 24px -20px rgba(15,23,42,.12);
+    }
+    .elig__item::before{
+      content:"";
+      width:14px;height:14px;border-radius:999px;
+      background:var(--nuva-blue);
+      box-shadow:0 0 0 6px rgba(59,110,174,.15);
+      flex:0 0 14px;
+    }
+    .elig__cta{
+      grid-column:1 / -1;
+      display:flex;justify-content:center;
+      margin-top:12px;
+      position: relative; z-index: 8; /* 讓按鈕層級更高，避免與時間軸疊到 */
     }
 
     /* Footer */
     footer{
-      background:#0f1f36;color:#cbd5e1;padding:28px 0;text-align:center
+      background:#0f1f36;color:#cbd5e1;padding:28px 0;text-align:center;
+      position: relative;       /* 建立 stacking context */
+      z-index: 5;               /* 高於遮罩與時間軸 */
+    }
+    /* 覆蓋時間軸固定中線的底部遮罩（只在 footer 進入視窗時顯示） */
+    .footer-blocker{
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 0;                 /* 預設不顯示，動態設成 footer 高度 */
+      background: #0f1f36;       /* 與 footer 同色 */
+      z-index: 4;                /* 高於 .timeline::before/.timeline__dot/.timeline__list */
+      pointer-events: none;      /* 不阻擋點擊 */
+      transition: height .2s ease;
     }
 
     /* Responsive */
@@ -265,6 +305,7 @@
       .tl__time{text-align:center;order:-1}
       .tl__card{order:2}
       .timeline::before{left:50%}
+      .elig--grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -279,9 +320,7 @@
       </a>
 
       <div class="nav__links">
-        <a class="nav__link" href="#why">為什麼加入</a>
-        <a class="nav__link" href="#timeline">適合誰/流程</a>
-        <a class="nav__link" href="#eligibility">報名資格</a>
+        <a class="nav__link" href="#eligibility">我能報名嗎？</a>
         <a class="btn cta-apply" href="https://tally.so/r/meWY5k" target="_blank" rel="noopener">立即報名</a>
       </div>
     </div>
@@ -297,7 +336,7 @@
       </h1>
 
       <p class="sub">
-        加入 nuva 校園大使，接受 <b>AI 與軟實力培訓</b>，參與全台校園巡迴，擔任 <b>AI 戰鬥營助教</b>。用一年打造你的影響力旅程。
+        加入 nuva 校園大使，接受 <b>AI 與軟實力培訓</b>，參與全台校園巡迴，<br>擔任 <b>校園 AI 英雄之旅隊長</b>。用一年打造你的影響力旅程。
       </p>
 
       <div class="cta">
@@ -316,7 +355,7 @@
         <div class="card">
           <h3>你會做什麼</h3>
           <ul>
-            <li>在校園巡迴與戰鬥營擔任推廣者 &amp; 隊長</li>
+            <li>在校園巡迴與校園 AI 英雄之旅擔任隊長</li>
             <li>帶領同學完成「AI 超級助理」實作</li>
             <li>和團隊一起讓 300 位學員走完實戰</li>
           </ul>
@@ -350,7 +389,7 @@
         <div class="tl__time">2025 11</div>
         <div class="tl__card">
           <h4 class="tl__meta">2025/11–2026/3｜AI × 軟實力培訓（三場｜線上直播＋台北實體）</h4>
-          <p>技巧要練，軟實力更要練。我們用三場循序漸進的培訓，將 Prompt、流程設計、簡報溝通、帶班技巧全部補齊。線上讓你反覆演練，實體讓你在真實場域試錯；每一次結束，都能看見自己更穩、 更會帶人。</p>
+          <p>技巧要練，軟實力更要練。我們用三場循序漸進的培訓，將 Prompt、流程設計、簡報溝通、帶班技巧全部補齊。線上讓你反覆演練，實體讓你在真實場域試錯；每一次結束，都能看見自己更穩、更會帶人。</p>
         </div>
       </article>
 
@@ -395,7 +434,7 @@
         <div class="tl__time">2026 09</div>
         <div class="tl__card">
           <h4 class="tl__meta">9 月｜校園大使結業典禮</h4>
-          <p>最後一次集合，但不是結束。你把證書與推薦信收進包包，也把夥伴與故事帶進下一段路。當主持人喊出你的名字，你會想起十個月前那個按下「報名」的自己——謝謝你勇敢出發，接下來，換你帶領更多人出發。</p>
+          <p>最後一次集合，但不是結束。你把證書與推薦信收進包包，也把夥伴與故事帶進下一段路。當主持人喊出你的名字，你會想起一年前那個按下「報名」的自己——謝謝你勇敢出發，接下來，換你帶領更多人出發。</p>
         </div>
       </article>
     </div>
@@ -405,12 +444,13 @@
   <section id="eligibility" class="apply">
     <div class="container">
       <h2>報名資格</h2>
-      <div class="elig">
-        <ul>
-          <li>目前為大專院校在校學生，填寫線上報名表</li>
-        </ul>
-        <div style="margin-top:18px">
-          <a class="btn cta-apply" href="https://tally.so/r/meWY5k" target="_blank" rel="noopener">立即報名</a>
+
+      <div class="elig elig--grid">
+        <div class="elig__item">現在是大學生</div>
+        <div class="elig__item">確定第一項符合 xD</div>
+
+        <div class="elig__cta">
+          <a class="btn btn--xl cta-apply" href="https://tally.so/r/meWY5k" target="_blank" rel="noopener">立即報名</a>
         </div>
       </div>
     </div>
@@ -496,6 +536,9 @@ Nope！AI 的技巧上哲會親手從零帶你到能上場，真的不需要先�
     </div>
   </section>
 
+  <!-- 覆蓋時間軸固定中線的底部遮罩 -->
+  <div class="footer-blocker" aria-hidden="true"></div>
+
   <!-- ===== FOOTER ===== -->
   <footer>
     <div class="container">
@@ -565,6 +608,22 @@ Nope！AI 的技巧上哲會親手從零帶你到能上場，真的不需要先�
         }
       });
     });
+
+    // ---- Footer blocker：只在 footer 進入視窗時把線遮住
+    const footerEl = document.querySelector('footer');
+    const blockerEl = document.querySelector('.footer-blocker');
+
+    function updateFooterBlocker(){
+      if(!footerEl || !blockerEl) return;
+      const rect = footerEl.getBoundingClientRect();
+      const footerInView = rect.top < window.innerHeight; // footer 頂端進入視窗
+      blockerEl.style.height = footerInView ? Math.ceil(rect.height) + 'px' : '0px';
+    }
+
+    updateFooterBlocker();
+    window.addEventListener('scroll', updateFooterBlocker, { passive: true });
+    window.addEventListener('resize', updateFooterBlocker);
+    window.addEventListener('load', updateFooterBlocker);
   </script>
 </body>
 </html>
